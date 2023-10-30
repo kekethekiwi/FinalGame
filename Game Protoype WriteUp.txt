@@ -1,0 +1,36 @@
+Game Protoype WriteUp
+
+Overall concept:
+-Inspired by Little Nightmares but I won't be making my game exactly same as Little Nightmares
+
+Features to implement:
+-Character Controller - Vector Movement(Maybe Unity's new input system) or Rigidbody Movement + Rotation using Quaternion math
+
+-Character Controller - An Animator you control using code (properly using StateMachineBehaviour?)
+
+-Character Controller - Mappable Inputs (var map = new InputActionMap(); map.AddAction("action1", binding: "<Keyboard>/space");)
+
+-Character Controller pfx running - Juice Particle systems, screen shake, blur (satisfiying)
+
+-Third person Camera Movement - Fluid Camera Movement
+
+-Menu item - Pause screen + functioning menu item >1 OR UI that displays info (health bar/minimap)
+
+-Background music - 1) fade in/out 2) transition seamless to other music tracks etc
+
+-Puzzles/Challenges - proper use of UnityEvent and UnityAction
+
+-Puzzles/Challenges - Procedurally generated levels
+
+-Puzzles/challenges - Resources folder to spawn or Scriptable objects
+
+Features that are Stretch Goals:
+-Portal or Load Different Scene - Proper use of Asynch scene loading (include loading bar)
+-Save multiple game sessions - properly save and load a game file 
+-Multiplayer Functionality
+
+
+You DO need a writeup of what you are planning to do! Tell me the overall concept, and what individual components or features you plan on implementing to make that happen. 
+
+Working by myself.
+
