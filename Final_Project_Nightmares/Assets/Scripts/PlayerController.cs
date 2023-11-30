@@ -5,28 +5,52 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed;
-    
     [SerializeField] private PlayerInput playerInput;
+    [SerializeField] private Rigidbody rb;
     private InputAction moveAction;
+    public float speed;
 
-    //public void OnMove(InputAction.CallbackContext context)
-    //{
-    //private Vector2 move;
-    //    move = context.ReadValue<Vector2>();
-    //}
-
+    //public float jumpVelocity;
+    // six  can idle, walk, run, push, crouchwalk, climb wall
     void Start()
     {
-        moveAction = playerInput.actions["move"];
+        moveAction = playerInput.actions["NewMove"];
     }
 
+    private void OnEnable()
+    {
+        moveAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        moveAction.Disable();
+    }
 
     void Update()
     {
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
-        Debug.Log(moveInput);
-        transform.Translate(moveInput.x * speed * Time.deltaTime, 0f, moveInput.y * speed * Time.deltaTime, Space.World);
+     
+        //transform.Translate(moveInput.x * speed * Time.deltaTime, 0f, moveInput.y * speed * Time.deltaTime, Space.World);
     }
+
+    private void FixedUpdate()
+    {
+        Vector3 moveInput = moveAction.ReadValue<Vector3>();
+
+
+
+        // move left and right
+        Vector3 moveDir = new Vector3(moveInput.x * speed, 0f, moveInput.z * speed);
+        rb.AddForce(moveDir);
+
+        //jump
+        rb.AddForce(new Vector3(0f, moveInput.y), ForceMode.Impulse);
+
+        //Quaternion faceDirMovement =
+        rb.MoveRotation(moveDir);
+
+        // todo: prevent double-jumping
+    }
+
 
 }
