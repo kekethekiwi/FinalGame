@@ -13,8 +13,9 @@ public class GameManager : MonoBehaviour
     {
         if (gameManager != null) Destroy(this.gameObject);
         gameManager = this;
-        saveSlot = SaveManager.GetSaveSlot();
         SaveManager.LoadGame();
+        saveSlot = SaveManager.GetSaveSlot();
+        if (displaySaveSlot != null) displaySaveSlot.text = "" + saveSlot;
     }
 
     // Start is called before the first frame update
