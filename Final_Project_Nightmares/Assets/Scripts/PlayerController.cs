@@ -63,6 +63,7 @@ public class PlayerController : MonoBehaviour
 
         if (moveInput != Vector3.zero)
         {
+            rb.freezeRotation = false;
             // get angle and rotation
             float angle = Mathf.Atan2(moveInput.x, moveInput.z) * Mathf.Rad2Deg;
             Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
@@ -79,13 +80,18 @@ public class PlayerController : MonoBehaviour
             //jump
             rb.AddForce(new Vector3(0f, moveInput.y), ForceMode.Impulse);
         }
-        
+        else
+        {
+            if (animator != null) animator.SetFloat("speed", 0f);
+            rb.freezeRotation = true;
+        } 
+
         // todo: prevent double-jumping
     }
 
     public void OnRun(InputAction.CallbackContext aContext)
     {
-        speedMultiplier = 2f;
+        speedMultiplier = 3f;
         if (animator != null) animator.SetBool("IsRuning", aContext.performed);
     }
 }
