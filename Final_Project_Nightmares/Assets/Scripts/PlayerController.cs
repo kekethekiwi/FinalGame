@@ -67,7 +67,6 @@ public class PlayerController : MonoBehaviour
             rb.freezeRotation = false;
             if (dustPFX != null)
             {
-                //Debug.Log("playpfx");
                 if (!dustPFX.isPlaying)
                 {
                     // attempt to rotate pfx to trail behind character
@@ -84,7 +83,6 @@ public class PlayerController : MonoBehaviour
 
             //rotate in direction of movement
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotateSpeed * Time.deltaTime));
-            //Debug.Log(angle + " " + Quaternion.Euler(0, angle, 0));
 
             // move left and right
             Vector3 moveDir = new Vector3(moveInput.x * speed * speedMultiplier, 0f, moveInput.z * speed * speedMultiplier);
@@ -92,9 +90,14 @@ public class PlayerController : MonoBehaviour
             if (animator != null) animator.SetFloat("speed", speed * speedMultiplier);
 
             //jump
-            if (animator != null) animator.SetBool("isJumping", true);
+            // todo: prevent double-jumping
             rb.AddForce(new Vector3(0f, moveInput.y), ForceMode.Impulse);
-            if (moveInput.y > 0f) GameManager.ShakeTheCamera(.03f, .03f);
+            if (moveInput.y > 0f)
+            {
+                if (animator != null) animator.SetTrigger("jump");
+                GameManager.ShakeTheCamera(.03f, .03f);
+            }
+            animator.ResetTrigger("jump");
 
         }
         else
@@ -103,7 +106,9 @@ public class PlayerController : MonoBehaviour
             rb.freezeRotation = true;
         } 
 
-        // todo: prevent double-jumping
+        // climb - hold h + arrow key to navigate
+
+        
     }
 
     public void OnRun(InputAction.CallbackContext aContext)
