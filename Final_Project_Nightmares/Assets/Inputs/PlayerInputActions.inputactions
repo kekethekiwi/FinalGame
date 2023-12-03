@@ -293,37 +293,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "One Modifier",
-                    "id": "84b68238-7860-4bb1-bc78-18b0f23d021f",
-                    "path": "OneModifier",
+                    "name": "",
+                    "id": "8cd4a3aa-41f2-434c-bc6d-834b29d548c8",
+                    "path": "<Keyboard>/h",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Climb",
-                    "isComposite": true,
+                    "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "c6a3c423-855b-40e9-a572-f1c697e105e3",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Climb",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "binding",
-                    "id": "88aeccd9-1a81-49b4-9971-1ec50ea93763",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Climb",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         },

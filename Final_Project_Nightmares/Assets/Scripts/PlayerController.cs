@@ -8,12 +8,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private ParticleSystem dustPFX;
+    public float speed;
+    public float rotateSpeed = 2f;
+
     private Animator animator;
     private InputAction moveAction;
     private InputAction runAction;
-    public float speed;
-    public float rotateSpeed = 2f;
     private float speedMultiplier = 1f;
+    private RaycastHit raycast;
+    private bool isClimbable;
+    private float sphereCastRadius = .25f;
+    private float castLength = .7f;
+    public LayerMask layerMask;
+    private float climbableLookAtAngle;
+    private bool isClimbing;
 
     //private Quaternion lastRotation = Quaternion.identity;
     //public float jumpVelocity;
@@ -97,7 +105,7 @@ public class PlayerController : MonoBehaviour
                 if (animator != null) animator.SetTrigger("jump");
                 GameManager.ShakeTheCamera(.03f, .03f);
             }
-            animator.ResetTrigger("jump");
+            if (animator != null) animator.ResetTrigger("jump");
 
         }
         else
@@ -106,9 +114,25 @@ public class PlayerController : MonoBehaviour
             rb.freezeRotation = true;
         } 
 
-        // climb - hold h + arrow key to navigate
+    
+    }
 
-        
+    private bool CheckClimbable()
+    {
+        isClimbable = Physics.SphereCast(transform.position, sphereCastRadius, transform.forward, out raycast, castLength, layerMask);
+        climbableLookAtAngle = Vector3.Angle(transform.forward, -raycast.normal);
+        return (isClimbable && climbableLookAtAngle < 30f);
+    }
+    public void OnClimb(InputAction.CallbackContext aContext)
+    {
+        Vector3 moveInput = moveAction.ReadValue<Vector3>();
+        // climb - hold h + arrow key to navigate
+        if (CheckClimbable())
+        {
+            rb.AddForce(moveInput.x * speed, moveInput.y * speed, moveInput.z * speed);
+            isClimbing = true;
+        }
+
     }
 
     public void OnRun(InputAction.CallbackContext aContext)
