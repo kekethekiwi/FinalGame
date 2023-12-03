@@ -8,6 +8,11 @@ public class GameManager : MonoBehaviour
     public TMP_Text displaySaveSlot;
     public static GameManager gameManager;
     private static int saveSlot;
+    public ShakeCamera shakeCamera;
+    [SerializeField] private GameObject menu;
+
+    private bool toggle = false;
+    public static bool pause = false;
 
     private void Awake()
     {
@@ -27,11 +32,29 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        ManageMenu();
+    }
+
+    private void ManageMenu()
+    {
+        if (Input.GetKeyDown(KeyCode.M) && !pause)
+        {
+            if (menu != null)
+            {
+                toggle = !toggle;
+                menu.SetActive(toggle);
+            }
+
+        }
     }
 
     private void OnApplicationQuit()
     {
         SaveManager.SaveGame();
+    }
+
+    public static void ShakeTheCamera(float amt, float duration)
+    {
+        if (gameManager != null && !pause) gameManager.shakeCamera.ShakeTheCamera(amt, duration);
     }
 }

@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
 
     //private Quaternion lastRotation = Quaternion.identity;
     //public float jumpVelocity;
-    // six  can idle, walk, run, push, crouchwalk, climb wall
+    // six  can *idle, *jump, *walk, run, push, crouchwalk, climb wall
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
@@ -92,7 +92,10 @@ public class PlayerController : MonoBehaviour
             if (animator != null) animator.SetFloat("speed", speed * speedMultiplier);
 
             //jump
+            if (animator != null) animator.SetBool("isJumping", true);
             rb.AddForce(new Vector3(0f, moveInput.y), ForceMode.Impulse);
+            if (moveInput.y > 0f) GameManager.ShakeTheCamera(.03f, .03f);
+
         }
         else
         {
@@ -106,6 +109,6 @@ public class PlayerController : MonoBehaviour
     public void OnRun(InputAction.CallbackContext aContext)
     {
         speedMultiplier = 3f;
-        if (animator != null) animator.SetBool("IsRuning", aContext.performed);
+        if (animator != null) animator.SetBool("isRuning", aContext.performed);
     }
 }
