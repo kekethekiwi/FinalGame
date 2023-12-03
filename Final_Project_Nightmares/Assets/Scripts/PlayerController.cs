@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private ParticleSystem dustPFX;
     private Animator animator;
     private InputAction moveAction;
     private InputAction runAction;
@@ -64,6 +65,19 @@ public class PlayerController : MonoBehaviour
         if (moveInput != Vector3.zero)
         {
             rb.freezeRotation = false;
+            if (dustPFX != null)
+            {
+                //Debug.Log("playpfx");
+                if (!dustPFX.isPlaying)
+                {
+                    // attempt to rotate pfx to trail behind character
+                    //Quaternion targetRot = Quaternion.Inverse(new Quaternion(0, transform.rotation.y, 0, 0));
+                    //dustPFX.transform.rotation = targetRot;
+                    //Debug.Log(targetRot + " " + dustPFX.transform.position);
+                    dustPFX.Play();
+                }
+                
+            }
             // get angle and rotation
             float angle = Mathf.Atan2(moveInput.x, moveInput.z) * Mathf.Rad2Deg;
             Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
