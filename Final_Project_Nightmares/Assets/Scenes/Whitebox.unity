@@ -5416,7 +5416,19 @@ MonoBehaviour:
     m_ActionId: 371d32e9-f52a-4d2e-ab0a-589180d5a3e0
     m_ActionName: Player/New action
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 347035824}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnClimb
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: a3c186a5-5bcb-413f-a616-8ab3f632c2df
     m_ActionName: Player/Climb[/Keyboard/h]
   m_NeverAutoSwitchControlSchemes: 0
@@ -5652,7 +5664,19 @@ MonoBehaviour:
     m_ActionId: 371d32e9-f52a-4d2e-ab0a-589180d5a3e0
     m_ActionName: Player/Run[/Keyboard/shift]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 395236056}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnClimb
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: a3c186a5-5bcb-413f-a616-8ab3f632c2df
     m_ActionName: Player/Climb[/Keyboard/h]
   m_NeverAutoSwitchControlSchemes: 0
@@ -5725,7 +5749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf7bf4f4eb2be3c4abe61bdc5398854e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 225668753}
+  player: {fileID: 347035817}
   camera: {fileID: 872276834}
   offset: 3.16
   yOffset: 2
