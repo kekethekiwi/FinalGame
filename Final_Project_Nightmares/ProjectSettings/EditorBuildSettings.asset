@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Whitebox.unity
+    guid: fdb35bc401ce8154cb875257e0a3e784
+  - enabled: 0
     path: Assets/Scenes/NightmaresMVP.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 0
+    path: Assets/Scenes/MainMenu.unity
+    guid: b5ec6ce29a535e64fb0a1f003fc9adab
   m_configObjects: {}
