@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         ManageMenu();
+        GameReset();
     }
 
     private void ManageMenu()
@@ -56,5 +58,13 @@ public class GameManager : MonoBehaviour
     public static void ShakeTheCamera(float amt, float duration)
     {
         if (gameManager != null && !pause) gameManager.shakeCamera.ShakeTheCamera(amt, duration);
+    }
+
+    private void GameReset()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 }

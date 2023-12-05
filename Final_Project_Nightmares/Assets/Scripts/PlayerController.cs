@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviour
                         currentState = state.idle;
                     }
 
-
+                    // maybe make gravity unchecked
                     break;
                 }
 
@@ -240,6 +240,9 @@ public class PlayerController : MonoBehaviour
                         rb.AddForce(moveDir);
                         if (animator != null) animator.SetFloat("speed", speed * speedMultiplier);
 
+                        // pfx
+                        PlayPFX(dustPFX);
+
                         if (moveInput.y > 0f) currentState = state.jump;
                     }
                     break;
@@ -322,4 +325,6 @@ public class PlayerController : MonoBehaviour
 
         }
     }
+
+    
 }
