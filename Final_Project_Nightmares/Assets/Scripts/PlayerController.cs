@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private ParticleSystem dustPFX;
     public float speed;
     public float rotateSpeed = 2f;
+    public float jumpVelocity = 6f;
 
     private Animator animator;
     private InputAction moveAction;
@@ -27,7 +28,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 lastPosition;
     //public float jumpVelocity;
-    // six  can *idle, *jump, *walk, run, push, crouchwalk, climb wall
+    // six  can *idle, *jump, *walk, run*, push, crouchwalk*, climb wall
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
@@ -178,9 +179,13 @@ public class PlayerController : MonoBehaviour
                     Vector3 moveInput = moveAction.ReadValue<Vector3>();
                     if (moveInput.y > 0f)
                     {
-                        rb.AddForce(new Vector3(0f, moveInput.y), ForceMode.Impulse);
+                        rb.AddForce(new Vector3(0f, moveInput.y * jumpVelocity), ForceMode.Impulse);
                         lastPosition = rb.position;
-                        if (animator != null) animator.SetTrigger("jump");
+                        if (animator != null) 
+                        {
+                            animator.SetTrigger("jump");
+                            animator.ResetTrigger("jump");
+                        }
                         //GameManager.ShakeTheCamera(.03f, .03f);
                     }
                     else if (moveInput.x > 0f || moveInput.y > 0f)
