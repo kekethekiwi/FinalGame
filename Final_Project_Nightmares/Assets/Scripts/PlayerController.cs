@@ -7,10 +7,12 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private new CapsuleCollider collider;
     [SerializeField] private ParticleSystem dustPFX;
     public float speed;
     public float rotateSpeed = 2f;
     public float jumpVelocity = 6f;
+    public float climbSpeed = 3f;
 
     private Animator animator;
     private InputAction moveAction;
@@ -25,6 +27,8 @@ public class PlayerController : MonoBehaviour
     private bool isClimbing = false;
     private state currentState = state.idle;
     private Quaternion lastRotation = Quaternion.identity;
+    private bool isGrounded = true;
+    private Vector3 lastClimbPos = Vector3.zero;
 
     private Vector3 lastPosition;
     //public float jumpVelocity;
@@ -117,9 +121,8 @@ public class PlayerController : MonoBehaviour
         //    rb.freezeRotation = true;
         //}
 
-
-        // climb
-        if (animator != null) animator.SetBool("isClimbing", isClimbing);
+        //Vector3 moveInputt = moveAction.ReadValue<Vector3>();
+        //Debug.Log($"x = {moveInputt.x}, y = {moveInputt.y}, z = {moveInputt.z}");
 
         switch (currentState)
         {
@@ -135,7 +138,7 @@ public class PlayerController : MonoBehaviour
                     {
                         if (animator != null) animator.SetFloat("speed", 0f);
                         rb.rotation = lastRotation;
-                        rb.position = lastPosition;
+                        //rb.position = lastPosition;
                     }
 
                     break;
@@ -146,7 +149,7 @@ public class PlayerController : MonoBehaviour
                     Vector3 moveInput = moveAction.ReadValue<Vector3>().normalized;
                     if (moveInput == Vector3.zero)
                     {
-                        lastPosition = rb.position;
+                        //lastPosition = rb.position;
                         currentState = state.idle;
                     }
                     else
@@ -162,7 +165,7 @@ public class PlayerController : MonoBehaviour
                         // move left and right
                         Vector3 moveDir = new Vector3(moveInput.x * speed * speedMultiplier, 0f, moveInput.z * speed * speedMultiplier);
                         rb.AddForce(moveDir);
-                        lastPosition = rb.position;
+                        //lastPosition = rb.position;
                         if (animator != null) animator.SetFloat("speed", speed * speedMultiplier);
 
                         // pfx
@@ -175,26 +178,26 @@ public class PlayerController : MonoBehaviour
                 }
             case state.jump:
                 {
-                    // todo: prevent double-jumping
+                    CheckifGrounded();
                     Vector3 moveInput = moveAction.ReadValue<Vector3>();
-                    if (moveInput.y > 0f)
+                    if (moveInput.y > 0f && isGrounded == true)
                     {
                         rb.AddForce(new Vector3(0f, moveInput.y * jumpVelocity), ForceMode.Impulse);
-                        lastPosition = rb.position;
-                        if (animator != null) 
-                        {
-                            animator.SetTrigger("jump");
-                            animator.ResetTrigger("jump");
-                        }
+                        if (animator != null) animator.SetTrigger("jump");
+
                         //GameManager.ShakeTheCamera(.03f, .03f);
                     }
-                    else if (moveInput.x > 0f || moveInput.y > 0f)
+                    else if (moveInput.x > 0f || moveInput.y > 0f && isGrounded == true)
                     {
+                        if (animator != null) animator.ResetTrigger("jump");
+                        //lastPosition = rb.position;
                         currentState = state.move;
 
                     }
-                    else
+                    else if (isGrounded == true)
                     {
+                        if (animator != null) animator.ResetTrigger("jump");
+                        //lastPosition = rb.position;
                         currentState = state.idle;
                     }
                     //if (animator != null) animator.ResetTrigger("jump");
@@ -202,10 +205,32 @@ public class PlayerController : MonoBehaviour
                 }
             case state.climb:
                 {
-                    if (!Input.GetKeyDown(KeyCode.H))
-                    {
-                        currentState = state.idle;
-                    }
+                    // climb
+                    if (animator != null) animator.SetBool("isClimbing", isClimbing);
+
+                    //if (!Input.GetKeyDown(KeyCode.H))
+                    //{
+                    //    currentState = state.idle;
+                    //    isClimbing = false;
+                    //}
+                    //Debug.Log("Climbing");
+                    // try old input system
+                    //playerInput.actions.FindAction("NewMove").Disable();
+                    //float xInput = Input.GetAxis("Horizontal");
+                    //float yInput = Input.GetAxis("Vertical");
+                    //rb.AddForce(new Vector3(xInput * climbSpeed, yInput * climbSpeed));
+
+                    //// try new input system
+                    rb.useGravity = false;
+                    //lastClimbPos = rb.position;
+                    Vector3 newPos = raycast.point + raycast.normal * (collider.radius - .1f);
+                    rb.MovePosition(newPos);
+                    Vector3 moveInput = moveAction.ReadValue<Vector3>().normalized;
+                    Vector3 vertClimb = new Vector3(0f, moveInput.z * climbSpeed * Time.fixedDeltaTime, 0f);
+                    Vector3 horizClimb = new Vector3(moveInput.x * climbSpeed * Time.fixedDeltaTime, 0f, 0f);
+                    Debug.Log($"moveInput = {moveInput}, vertclimb = {vertClimb}, horizClimb = {horizClimb}, final = {rb.position + vertClimb + horizClimb} ");
+                    rb.MovePosition(rb.position + vertClimb + horizClimb);
+                    isClimbing = true;
 
 
                     break;
@@ -217,8 +242,8 @@ public class PlayerController : MonoBehaviour
     private bool CheckClimbable()
     {
         isClimbable = Physics.SphereCast(transform.position, sphereCastRadius, transform.forward, out raycast, castLength, layerMask);
-        Debug.Log("onClimb " + isClimbable);
         climbableLookAtAngle = Vector3.Angle(transform.forward, -raycast.normal);
+        Debug.Log("onClimb " + isClimbable);
         return (isClimbable && climbableLookAtAngle < 30f);
     }
     public void OnClimb(InputAction.CallbackContext aContext)
@@ -227,19 +252,23 @@ public class PlayerController : MonoBehaviour
         Vector3 moveInput = moveAction.ReadValue<Vector3>();
         if (CheckClimbable())
         {
-            Debug.Log("I'm climbing wall");
+            //Debug.Log("I'm climbing wall");
             currentState = state.climb;
-            rb.AddForce(moveInput.x * speed, 200f, moveInput.z * speed);
-            lastPosition = rb.position;
             isClimbing = true;
+            //lastPosition = rb.position;
+
         }
-        isClimbing = false;
+        else
+        {
+            isClimbing = false;
+        }
     }
 
     public void OnRun(InputAction.CallbackContext aContext)
     {
-        speedMultiplier = 3f;
-        if (animator != null) animator.SetBool("isRuning", aContext.performed);
+        speedMultiplier = 1.4f;
+        Vector3 moveInput = moveAction.ReadValue<Vector3>();
+        if (animator != null) animator.SetBool("isRuning", aContext.performed && moveInput != Vector3.zero);
     }
 
     private void PlayPFX(ParticleSystem pfx)
@@ -258,5 +287,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void CheckifGrounded()
+    {
+        //isGrounded = rb.velocity.y == 0 ? true : false;
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, .1f);
+    }
     
 }
