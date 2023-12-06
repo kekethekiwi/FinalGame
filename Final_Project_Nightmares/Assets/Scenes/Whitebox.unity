@@ -6186,7 +6186,7 @@ MonoBehaviour:
   speed: 16
   rotateSpeed: 5
   jumpVelocity: 6
-  climbSpeed: 10
+  climbSpeed: 6
   layerMask:
     serializedVersion: 2
     m_Bits: 64
