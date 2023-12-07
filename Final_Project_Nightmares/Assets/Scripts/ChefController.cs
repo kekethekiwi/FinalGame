@@ -12,6 +12,7 @@ public class ChefController : MonoBehaviour
     public float deadDist;
     public PlayerController playerController;
     private Coroutine deadCoroutine = null;
+    private Coroutine chaseCoroutine = null;
 
     // Start is called before the first frame update
     void Start()
@@ -36,13 +37,14 @@ public class ChefController : MonoBehaviour
     {
         // rotation of chef
         Vector3 lookDir = target.transform.position - transform.position;
-        transform.rotation = new Quaternion(lookDir.x,lookDir.y, lookDir.z, 0f) ;
-
+        transform.rotation = Quaternion.LookRotation(lookDir) ;
+        
         if (Vector3.Distance(transform.position, target.transform.position) <= triggerDist)
         {
             // run towards player
             animator.SetBool("isRuning", true);
-            transform.Translate(lookDir * runSpeed * Time.deltaTime);
+            AudioManager.SetCrossFade(true);
+            if (chaseCoroutine != null) chaseCoroutine = StartCoroutine(ChasePlayer());
         }
         else
         {
@@ -62,12 +64,32 @@ public class ChefController : MonoBehaviour
         }
 
     }
+    IEnumerator ChasePlayer()
+    {
+        Vector3 lookDir = target.transform.position - transform.position;
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = target.transform.position;
+        float startTime = Time.time;
+        float duration = 2f;
 
+        while (Time.time - startTime < duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            transform.Translate(Vector3.Lerp(startPos, targetPos,t));
+            yield return null;
+        }
+        
+        chaseCoroutine = null;
+    }
     IEnumerator PlayDeadScene()
     {
         GameManager.ShakeTheCamera(.03f, .03f);
         playerController.SetIsAlive(false);
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSeconds(2.5f);
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        deadCoroutine = null;
     }
+
+    // transform.Translate(lookDir * runSpeed * Time.deltaTime);
 }

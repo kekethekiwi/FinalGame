@@ -7846,7 +7846,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1642441554}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -41.9, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7868,6 +7868,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 753496375}
   runSpeed: 10
+  animator: {fileID: 2107954685}
+  triggerDist: 30
+  deadDist: 1
+  playerController: {fileID: 753496378}
 --- !u!54 &1642441557
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8997,6 +9001,11 @@ PrefabInstance:
 --- !u!4 &2107954684 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4a0b03463feea25469a46f72f6e2976d, type: 3}
+  m_PrefabInstance: {fileID: 2107954683}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2107954685 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 4a0b03463feea25469a46f72f6e2976d, type: 3}
   m_PrefabInstance: {fileID: 2107954683}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6162128361802491288

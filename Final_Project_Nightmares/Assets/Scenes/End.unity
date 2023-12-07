@@ -254,9 +254,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 013c46fe008dcda4888d95562059128b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displaySaveSlot: {fileID: 6162128361973683328}
+  displaySaveSlot: {fileID: 0}
   shakeCamera: {fileID: 279497533}
-  menu: {fileID: 1574727272}
+  menu: {fileID: 0}
 --- !u!4 &420962283
 Transform:
   m_ObjectHideFlags: 0
@@ -475,8 +475,8 @@ Canvas:
   m_GameObject: {fileID: 594697135}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 279497531}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

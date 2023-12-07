@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour
         if (gameManager != null) Destroy(this.gameObject);
         gameManager = this;
 
-        menu.SetActive(false);
+        if (menu != null) menu.SetActive(false);
+
 
         SaveManager.LoadGame();
         saveSlot = SaveManager.GetSaveSlot();

@@ -12,16 +12,19 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixer mixer;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
-    
+    public static AudioManager audioManager;
 
     private AudioSource currentMusicSource;
     private AudioSource otherMusicSource;
     private float crossFadeSpeed = 1f;
-    private bool doCrossFade = false;
+    private static bool doCrossFade = false;
     
     // Start is called before the first frame update
     void Start()
     {
+        if (audioManager != null) Destroy(this.gameObject);
+        audioManager = this;
+
         currentMusicSource = musicSource1;
         otherMusicSource = musicSource2;
         PlayMusic(mainMusic);
@@ -92,10 +95,17 @@ public class AudioManager : MonoBehaviour
 
     private void LoadVolume()
     {
+        
         musicSlider.value = SaveManager.GetMusicVol();
         sfxSlider.value = SaveManager.GetSFXVol();
         adjustMusicVolume();
         adjustSFXVolume();
+        
+        
     }
 
+    public static void SetCrossFade(bool crossFade)
+    {
+        doCrossFade = crossFade;
+    }
 }
