@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     public float rotateSpeed = 2f;
     public float jumpVelocity = 6f;
     public float climbSpeed = 3f;
+    public float firstWait;
+    public float secondWait;
 
     private Animator animator;
     private InputAction moveAction;
@@ -131,6 +133,7 @@ public class PlayerController : MonoBehaviour
             case state.idle:
                 {
                     Vector3 moveInput = moveAction.ReadValue<Vector3>();
+                    if (animator != null) animator.enabled = true;
                     if (moveInput != Vector3.zero)
                     {
                         //rb.freezeRotation = false;
@@ -165,14 +168,14 @@ public class PlayerController : MonoBehaviour
                         lastRotation = rb.rotation;
 
                         // move left and right
-                        ManageSpeed();
+                        //ManageSpeed();
                         Vector3 moveDir = new Vector3(moveInput.x * speed * speedMultiplier, 0f, moveInput.z * speed * speedMultiplier);
                         rb.AddForce(moveDir);
                         //lastPosition = rb.position;
                         if (animator != null) 
                         { 
                             animator.SetFloat("speed", speed * speedMultiplier);
-                            animator.SetBool("isRuning",  speedMultiplier > 1f && moveInput != Vector3.zero);
+                            //animator.SetBool("isRuning",  speedMultiplier > 1f && moveInput != Vector3.zero);
                             Debug.Log($"Animator should run = {speedMultiplier > 1f && moveInput != Vector3.zero}");
 
                         }
@@ -214,19 +217,26 @@ public class PlayerController : MonoBehaviour
                 }
             case state.climb:
                 {
-                    if (!Input.GetKeyDown(KeyCode.H))
+                    if (!Input.GetKey(KeyCode.H) && !Input.GetKeyDown(KeyCode.H))
                     {
-                        currentState = state.idle;
+                        ResetClimb();
                     }
-                    else if (climbCoroutine == null)
+                    else
                     {
-                        climbCoroutine = ClimbCoroutine();
-                        StartCoroutine(climbCoroutine);
-                    }
-                    
+                        //if (animator != null) animator.SetBool("isClimbing", true);
+                        //rb.useGravity = false;
+                        //Vector3 moveInput = moveAction.ReadValue<Vector3>().normalized;
+                        //Vector3 vertClimb = new Vector3(0f, moveInput.z * climbSpeed * Time.fixedDeltaTime, 0f);
+                        //Vector3 horizClimb = new Vector3(moveInput.x * climbSpeed * Time.fixedDeltaTime, 0f, 0f);
+                        //rb.MovePosition(rb.position + vertClimb + horizClimb);
 
-                    //// climb
-                    //if (animator != null) animator.SetBool("isClimbing", isClimbing);
+                        if (climbCoroutine == null)
+                        {
+                            Debug.Log("create and start CoROUTINE");
+                            climbCoroutine = ClimbCoroutine();
+                            StartCoroutine(climbCoroutine);
+                        }
+                    }
 
                     ////// try new input system
                     //rb.useGravity = false;
@@ -255,6 +265,27 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void ResetClimb()
+    {
+        climbCoroutine = null;
+        if (animator != null)
+        {
+            animator.SetBool("isClimbing", false);
+            animator.enabled = true;
+        }
+        rb.useGravity = true;
+
+        Vector3 moveInput = moveAction.ReadValue<Vector3>().normalized;
+        if (moveInput != Vector3.zero)
+        {
+            currentState = moveInput.y > 0f ? state.jump : state.move;
+        }
+        else
+        {
+            currentState = state.idle;
+        }
+
+    }
     IEnumerator ClimbCoroutine()
     {
         rb.useGravity = false;
@@ -263,25 +294,29 @@ public class PlayerController : MonoBehaviour
 
         if (animator != null)
         {
+            animator.enabled = true;
             animator.SetBool("isClimbing", true);
         }
 
+        yield return new WaitForSeconds(firstWait);
+        //if (animator != null) animator.enabled = false;
+
         float startTime = Time.time;
         float duration = .5f;
-
         while (Time.time - startTime < duration)
         {
             float t = (Time.time - startTime) / duration;
             rb.MovePosition(Vector3.Lerp(startPos, targetPos, t));
             yield return null;
         }
-
-        rb.MovePosition(targetPos);
+        //rb.MovePosition(targetPos);
 
         if (animator != null)
         {
-            animator.enabled = true;
+            animator.enabled = false;
+            animator.SetBool("isClimbing", true);
         }
+        yield return new WaitForSeconds(secondWait);
 
         climbCoroutine = null;
     }
@@ -316,22 +351,35 @@ public class PlayerController : MonoBehaviour
             currentState = state.climb;
             //lastPosition = rb.position;
         }
+        
     }
 
     public void OnRun(InputAction.CallbackContext aContext)
     {
-        speedMultiplier = 1.4f;
+        
         Vector3 moveInput = moveAction.ReadValue<Vector3>();
-        if (animator != null) animator.SetBool("isRuning", aContext.performed && moveInput != Vector3.zero);
+        if (aContext.performed && moveInput != Vector3.zero && currentState != state.climb)
+        {
+            speedMultiplier = 1.4f;
+            if (animator != null) animator.SetBool("isRuning", true);
+        }
+        else
+        {
+            ManageSpeed();
+            if (animator != null) animator.SetBool("isRuning", false);
+        }
     }
 
     private void ManageSpeed()
     {
         // character not running, reset speed
-        if (!Input.GetKey(KeyCode.LeftShift | KeyCode.RightShift))
+        //if (!Input.GetKey(KeyCode.LeftShift | KeyCode.RightShift) && speedMultiplier > 1f)
+        //{
+        //    speedMultiplier = 1f;
+        //}
+        if (speedMultiplier > 1f)
         {
-            speedMultiplier = 1f;
-            Debug.Log("speed reset");
+            speedMultiplier = Mathf.Lerp(speedMultiplier, 1f, 0.1f);
         }
     }
     private void PlayPFX(ParticleSystem pfx)
@@ -341,12 +389,7 @@ public class PlayerController : MonoBehaviour
             if (!pfx.isPlaying)
             {
                 pfx.Play();
-                // attempt to rotate pfx to trail behind character
-                //Quaternion targetRot = Quaternion.Inverse(new Quaternion(0, transform.rotation.y, 0, 0));
-                //dustPFX.transform.rotation = targetRot;
-                //Debug.Log(targetRot + " " + dustPFX.transform.position);
             }
-
         }
     }
 
@@ -367,5 +410,12 @@ public class PlayerController : MonoBehaviour
     //float xInput = Input.GetAxis("Horizontal");
     //float yInput = Input.GetAxis("Vertical");
     //rb.AddForce(new Vector3(xInput * climbSpeed, yInput * climbSpeed));
+    //climbCoroutine = ClimbCoroutine();
+    //StartCoroutine(climbCoroutine);
+
+    // attempt to rotate pfx to trail behind character
+    //Quaternion targetRot = Quaternion.Inverse(new Quaternion(0, transform.rotation.y, 0, 0));
+    //dustPFX.transform.rotation = targetRot;
+    //Debug.Log(targetRot + " " + dustPFX.transform.position);
 
 }
