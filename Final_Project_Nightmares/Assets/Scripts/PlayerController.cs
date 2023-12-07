@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     public float climbSpeed = 3f;
     public float firstWait;
     public float secondWait;
+    public static bool isAlive = true;
 
     private Animator animator;
     private InputAction moveAction;
@@ -127,144 +128,147 @@ public class PlayerController : MonoBehaviour
 
         //Vector3 moveInputt = moveAction.ReadValue<Vector3>();
         //Debug.Log($"x = {moveInputt.x}, y = {moveInputt.y}, z = {moveInputt.z}");
-
-        switch (currentState)
+        if (isAlive)
         {
-            case state.idle:
-                {
-                    Vector3 moveInput = moveAction.ReadValue<Vector3>();
-                    if (animator != null) animator.enabled = true;
-                    if (moveInput != Vector3.zero)
+
+            switch (currentState)
+            {
+                case state.idle:
                     {
-                        //rb.freezeRotation = false;
-                        currentState = moveInput.y > 0f ? state.jump : state.move;
-                    }
-                    else
-                    {
-                        if (animator != null) animator.SetFloat("speed", 0f);
-                        rb.rotation = lastRotation;
-                        //rb.position = lastPosition;
-                    }
-
-                    break;
-                }
-
-            case state.move:
-                {
-                    Vector3 moveInput = moveAction.ReadValue<Vector3>().normalized;
-                    if (moveInput == Vector3.zero)
-                    {
-                        //lastPosition = rb.position;
-                        currentState = state.idle;
-                    }
-                    else
-                    {
-                        // get angle and rotation
-                        float angle = Mathf.Atan2(moveInput.x, moveInput.z) * Mathf.Rad2Deg;
-                        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-
-                        //rotate in direction of movement
-                        rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotateSpeed * Time.deltaTime));
-                        lastRotation = rb.rotation;
-
-                        // move left and right
-                        //ManageSpeed();
-                        Vector3 moveDir = new Vector3(moveInput.x * speed * speedMultiplier, 0f, moveInput.z * speed * speedMultiplier);
-                        rb.AddForce(moveDir);
-                        //lastPosition = rb.position;
-                        if (animator != null) 
-                        { 
-                            animator.SetFloat("speed", speed * speedMultiplier);
-                            //animator.SetBool("isRuning",  speedMultiplier > 1f && moveInput != Vector3.zero);
-                            //Debug.Log($"Animator should run = {speedMultiplier > 1f && moveInput != Vector3.zero}");
-
-                        }
-
-                        // pfx
-                        PlayPFX(dustPFX);
-
-                        // switch to jump
-                        if (moveInput.y > 0f) currentState = state.jump;
-                    }
-                    break;
-                }
-            case state.jump:
-                {
-                    CheckifGrounded();
-                    Vector3 moveInput = moveAction.ReadValue<Vector3>();
-                    if (moveInput.y > 0f && isGrounded == true)
-                    {
-                        rb.AddForce(new Vector3(0f, moveInput.y * jumpVelocity), ForceMode.Impulse);
-                        if (animator != null) animator.SetTrigger("jump");
-
-                        //GameManager.ShakeTheCamera(.03f, .03f);
-                    }
-                    else if (moveInput.x > 0f || moveInput.y > 0f && isGrounded == true)
-                    {
-                        if (animator != null) animator.ResetTrigger("jump");
-                        //lastPosition = rb.position;
-                        currentState = state.move;
-
-                    }
-                    else if (isGrounded == true)
-                    {
-                        if (animator != null) animator.ResetTrigger("jump");
-                        //lastPosition = rb.position;
-                        currentState = state.idle;
-                    }
-                    //if (animator != null) animator.ResetTrigger("jump");
-                    break;
-                }
-            case state.climb:
-                {
-                    if (Input.GetKey(KeyCode.H))
-                    {
-                        if (climbCoroutine == null)
+                        Vector3 moveInput = moveAction.ReadValue<Vector3>();
+                        if (animator != null) animator.enabled = true;
+                        if (moveInput != Vector3.zero)
                         {
-                            climbCoroutine = ClimbCoroutine();
-                            StartCoroutine(climbCoroutine);
+                            //rb.freezeRotation = false;
+                            currentState = moveInput.y > 0f ? state.jump : state.move;
                         }
+                        else
+                        {
+                            if (animator != null) animator.SetFloat("speed", 0f);
+                            rb.rotation = lastRotation;
+                            //rb.position = lastPosition;
+                        }
+
+                        break;
                     }
-                    else
+
+                case state.move:
                     {
-                        //if (animator != null) animator.SetBool("isClimbing", true);
+                        Vector3 moveInput = moveAction.ReadValue<Vector3>().normalized;
+                        if (moveInput == Vector3.zero)
+                        {
+                            //lastPosition = rb.position;
+                            currentState = state.idle;
+                        }
+                        else
+                        {
+                            // get angle and rotation
+                            float angle = Mathf.Atan2(moveInput.x, moveInput.z) * Mathf.Rad2Deg;
+                            Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+
+                            //rotate in direction of movement
+                            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotateSpeed * Time.deltaTime));
+                            lastRotation = rb.rotation;
+
+                            // move left and right
+                            //ManageSpeed();
+                            Vector3 moveDir = new Vector3(moveInput.x * speed * speedMultiplier, 0f, moveInput.z * speed * speedMultiplier);
+                            rb.AddForce(moveDir);
+                            //lastPosition = rb.position;
+                            if (animator != null)
+                            {
+                                animator.SetFloat("speed", speed * speedMultiplier);
+                                //animator.SetBool("isRuning",  speedMultiplier > 1f && moveInput != Vector3.zero);
+                                //Debug.Log($"Animator should run = {speedMultiplier > 1f && moveInput != Vector3.zero}");
+
+                            }
+
+                            // pfx
+                            PlayPFX(dustPFX);
+
+                            // switch to jump
+                            if (moveInput.y > 0f) currentState = state.jump;
+                        }
+                        break;
+                    }
+                case state.jump:
+                    {
+                        CheckifGrounded();
+                        Vector3 moveInput = moveAction.ReadValue<Vector3>();
+                        if (moveInput.y > 0f && isGrounded == true)
+                        {
+                            rb.AddForce(new Vector3(0f, moveInput.y * jumpVelocity), ForceMode.Impulse);
+                            if (animator != null) animator.SetTrigger("jump");
+
+                            //GameManager.ShakeTheCamera(.03f, .03f);
+                        }
+                        else if (moveInput.x > 0f || moveInput.y > 0f && isGrounded == true)
+                        {
+                            if (animator != null) animator.ResetTrigger("jump");
+                            //lastPosition = rb.position;
+                            currentState = state.move;
+
+                        }
+                        else if (isGrounded == true)
+                        {
+                            if (animator != null) animator.ResetTrigger("jump");
+                            //lastPosition = rb.position;
+                            currentState = state.idle;
+                        }
+                        //if (animator != null) animator.ResetTrigger("jump");
+                        break;
+                    }
+                case state.climb:
+                    {
+                        if (Input.GetKey(KeyCode.H))
+                        {
+                            if (climbCoroutine == null)
+                            {
+                                climbCoroutine = ClimbCoroutine();
+                                StartCoroutine(climbCoroutine);
+                            }
+                        }
+                        else
+                        {
+                            //if (animator != null) animator.SetBool("isClimbing", true);
+                            //rb.useGravity = false;
+                            //Vector3 moveInput = moveAction.ReadValue<Vector3>().normalized;
+                            //Vector3 vertClimb = new Vector3(0f, moveInput.z * climbSpeed * Time.fixedDeltaTime, 0f);
+                            //Vector3 horizClimb = new Vector3(moveInput.x * climbSpeed * Time.fixedDeltaTime, 0f, 0f);
+                            //rb.MovePosition(rb.position + vertClimb + horizClimb);
+
+                            ResetClimb();
+                            Debug.Log("RESET CLIMB");
+                        }
+
+                        ////// try new input system
                         //rb.useGravity = false;
+                        //Vector3 newPos = raycast.point + raycast.normal * (collider.radius - .1f);
+                        //rb.MovePosition(newPos);
+                        //if (animator != null && animator.GetCurrentAnimatorStateInfo(0).IsName("isClimbing")) 
+                        //{
+                        //    animator.enabled = false;
+                        //}
+
                         //Vector3 moveInput = moveAction.ReadValue<Vector3>().normalized;
                         //Vector3 vertClimb = new Vector3(0f, moveInput.z * climbSpeed * Time.fixedDeltaTime, 0f);
                         //Vector3 horizClimb = new Vector3(moveInput.x * climbSpeed * Time.fixedDeltaTime, 0f, 0f);
-                        //rb.MovePosition(rb.position + vertClimb + horizClimb);
+                        //Debug.Log($"moveInput = {moveInput}, vertclimb = {vertClimb}, horizClimb = {horizClimb}, final = {rb.position + vertClimb + horizClimb} ");
+                        //if (animator != null && animator.GetCurrentAnimatorStateInfo(0).IsName("isClimbing"))
+                        //{
+                        //    animator.enabled = true;
+                        //}
 
-                        ResetClimb();
-                        Debug.Log("RESET CLIMB");
+                        //rb.MovePosition(rb.position + vertClimb + horizClimb);
+                        //isClimbing = true;
+
+                        break;
                     }
 
-                    ////// try new input system
-                    //rb.useGravity = false;
-                    //Vector3 newPos = raycast.point + raycast.normal * (collider.radius - .1f);
-                    //rb.MovePosition(newPos);
-                    //if (animator != null && animator.GetCurrentAnimatorStateInfo(0).IsName("isClimbing")) 
-                    //{
-                    //    animator.enabled = false;
-                    //}
-
-                    //Vector3 moveInput = moveAction.ReadValue<Vector3>().normalized;
-                    //Vector3 vertClimb = new Vector3(0f, moveInput.z * climbSpeed * Time.fixedDeltaTime, 0f);
-                    //Vector3 horizClimb = new Vector3(moveInput.x * climbSpeed * Time.fixedDeltaTime, 0f, 0f);
-                    //Debug.Log($"moveInput = {moveInput}, vertclimb = {vertClimb}, horizClimb = {horizClimb}, final = {rb.position + vertClimb + horizClimb} ");
-                    //if (animator != null && animator.GetCurrentAnimatorStateInfo(0).IsName("isClimbing"))
-                    //{
-                    //    animator.enabled = true;
-                    //}
-
-                    //rb.MovePosition(rb.position + vertClimb + horizClimb);
-                    //isClimbing = true;
-
-                    break;
-                }
-                
+            }
+            PreventClimb();
         }
-
-        PreventClimb();
+        
 
     }
 
@@ -404,7 +408,10 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
+    public void SetIsAlive(bool alive)
+    {
+        isAlive = alive;
+    }
     private void CheckifGrounded()
     {
         //isGrounded = rb.velocity.y == 0 ? true : false;

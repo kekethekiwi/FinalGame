@@ -1733,6 +1733,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5185573603111660054, guid: 84b8ee90aa2379d4cb27148ba6381456, type: 3}
+      propertyPath: mixer
+      value: 
+      objectReference: {fileID: 24100000, guid: 3effd86a88f0de0458ec4112f597a1df, type: 2}
+    - target: {fileID: 5185573603111660054, guid: 84b8ee90aa2379d4cb27148ba6381456, type: 3}
       propertyPath: mainMusic
       value: 
       objectReference: {fileID: 11400000, guid: d1f03497f40cdd94282af73bb7680b18, type: 2}
