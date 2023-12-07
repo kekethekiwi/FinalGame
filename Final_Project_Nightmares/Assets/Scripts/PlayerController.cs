@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour
     private float castLength = .7f;
     public LayerMask layerMask;
     private float climbableLookAtAngle;
-    private bool isClimbing = false;
     private state currentState = state.idle;
     private Quaternion lastRotation = Quaternion.identity;
     private bool isGrounded = true;
@@ -35,6 +34,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator climbCoroutine;
 
     private Vector3 lastPosition;
+    //private bool isClimbing = false;
     //public float jumpVelocity;
     // six  can *idle, *jump, *walk, run*, push, crouchwalk*, climb wall
     void Start()
@@ -176,7 +176,7 @@ public class PlayerController : MonoBehaviour
                         { 
                             animator.SetFloat("speed", speed * speedMultiplier);
                             //animator.SetBool("isRuning",  speedMultiplier > 1f && moveInput != Vector3.zero);
-                            Debug.Log($"Animator should run = {speedMultiplier > 1f && moveInput != Vector3.zero}");
+                            //Debug.Log($"Animator should run = {speedMultiplier > 1f && moveInput != Vector3.zero}");
 
                         }
 
@@ -217,9 +217,13 @@ public class PlayerController : MonoBehaviour
                 }
             case state.climb:
                 {
-                    if (!Input.GetKey(KeyCode.H) && !Input.GetKeyDown(KeyCode.H))
+                    if (Input.GetKey(KeyCode.H))
                     {
-                        ResetClimb();
+                        if (climbCoroutine == null)
+                        {
+                            climbCoroutine = ClimbCoroutine();
+                            StartCoroutine(climbCoroutine);
+                        }
                     }
                     else
                     {
@@ -230,12 +234,8 @@ public class PlayerController : MonoBehaviour
                         //Vector3 horizClimb = new Vector3(moveInput.x * climbSpeed * Time.fixedDeltaTime, 0f, 0f);
                         //rb.MovePosition(rb.position + vertClimb + horizClimb);
 
-                        if (climbCoroutine == null)
-                        {
-                            Debug.Log("create and start CoROUTINE");
-                            climbCoroutine = ClimbCoroutine();
-                            StartCoroutine(climbCoroutine);
-                        }
+                        ResetClimb();
+                        Debug.Log("RESET CLIMB");
                     }
 
                     ////// try new input system
@@ -261,10 +261,20 @@ public class PlayerController : MonoBehaviour
 
                     break;
                 }
+                
         }
+
+        PreventClimb();
 
     }
 
+    private void PreventClimb()
+    {
+        if (!Input.GetKey(KeyCode.H))
+        {
+            if (animator != null) animator.SetBool("isClimbing", false);
+        }
+    }
     private void ResetClimb()
     {
         climbCoroutine = null;
@@ -379,7 +389,9 @@ public class PlayerController : MonoBehaviour
         //}
         if (speedMultiplier > 1f)
         {
-            speedMultiplier = Mathf.Lerp(speedMultiplier, 1f, 0.1f);
+            //speedMultiplier = Mathf.Lerp(speedMultiplier, 1f, 0.1f);
+            speedMultiplier = 1f;
+            Debug.Log("Speed should be 16f");
         }
     }
     private void PlayPFX(ParticleSystem pfx)

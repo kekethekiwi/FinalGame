@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public TMP_Text displaySaveSlot;
     public static GameManager gameManager;
     private static int saveSlot;
+    public static float musicVol;
+    public static float sfxVol;
     public ShakeCamera shakeCamera;
     [SerializeField] private GameObject menu;
 
@@ -19,9 +21,16 @@ public class GameManager : MonoBehaviour
     {
         if (gameManager != null) Destroy(this.gameObject);
         gameManager = this;
+
+        menu.SetActive(false);
+
         SaveManager.LoadGame();
         saveSlot = SaveManager.GetSaveSlot();
+        sfxVol = SaveManager.GetMusicVol();
+        musicVol = SaveManager.GetSFXVol();
         if (displaySaveSlot != null) displaySaveSlot.text = "" + saveSlot;
+
+
     }
 
     // Start is called before the first frame update

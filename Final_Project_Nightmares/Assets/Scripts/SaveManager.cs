@@ -17,6 +17,23 @@ public class SaveManager : MonoBehaviour
         
     }
 
+    public static void SetMusicVol(float aVolume)
+    {
+        currentData.musicVol = aVolume;
+    }
+    public static float GetMusicVol()
+    {
+        return currentData.musicVol;
+    }
+    public static void SetSFXVol(float aVolume)
+    {
+        currentData.sfxVol = aVolume;
+    }
+    public static float GetSFXVol()
+    {
+        return currentData.sfxVol;
+    }
+
     public static void SetSaveSlot(int slot)
     {
         currentData.saveSlot = Mathf.Max(slot, 1);
@@ -50,6 +67,7 @@ public class SaveManager : MonoBehaviour
                 string dataToWrite = JsonUtility.ToJson(aData);
                 writer.Write(dataToWrite);
             }
+            Debug.Log($"Path: {aPath}");
         }
         catch (System.Exception e)
         {
@@ -113,4 +131,6 @@ public class SaveManager : MonoBehaviour
 public class GameData
 {
     public int saveSlot = 0;
+    public float musicVol = 0;
+    public float sfxVol = 0;
 }
