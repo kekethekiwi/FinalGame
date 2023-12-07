@@ -9,6 +9,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource musicSource1;
     public AudioSource musicSource2;
     public MusicTrackScriptable mainMusic;
+    public MusicTrackScriptable droanMusic;
     [SerializeField] private AudioMixer mixer;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
@@ -16,7 +17,7 @@ public class AudioManager : MonoBehaviour
 
     private AudioSource currentMusicSource;
     private AudioSource otherMusicSource;
-    private float crossFadeSpeed = 1f;
+    private float crossFadeSpeed = 1.5f;
     private static bool doCrossFade = false;
     
     // Start is called before the first frame update
@@ -27,6 +28,7 @@ public class AudioManager : MonoBehaviour
 
         currentMusicSource = musicSource1;
         otherMusicSource = musicSource2;
+        otherMusicSource.volume = 0;
         PlayMusic(mainMusic);
 
         LoadVolume();
@@ -38,12 +40,14 @@ public class AudioManager : MonoBehaviour
     {
         if (doCrossFade)
         {
-            currentMusicSource.volume += Time.deltaTime * crossFadeSpeed;
-            otherMusicSource.volume -= Time.deltaTime * crossFadeSpeed;
-            if(currentMusicSource.volume >= 1)
+            currentMusicSource.volume -= Time.deltaTime * crossFadeSpeed;
+            otherMusicSource.volume += Time.deltaTime * crossFadeSpeed;
+            if (otherMusicSource.volume >= 1)
             {
-                otherMusicSource.volume = 0;
+                currentMusicSource.volume = 0;
                 FlipMusicSources();
+                PlayMusic(droanMusic);
+                Debug.Log($"currentMusicSource = {currentMusicSource}");
                 doCrossFade = false;
             }
 
@@ -59,12 +63,12 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(MusicTrackScriptable aTrack)
     {
-        if (currentMusicSource != null)
-        {
-            currentMusicSource.clip = aTrack.mainMusicClip;
-            currentMusicSource.loop = aTrack.loops;
-            currentMusicSource.Play();
-        }
+        //if (currentMusicSource != null)
+        Debug.Log("play droan music");
+        currentMusicSource.clip = aTrack.mainMusicClip;
+        currentMusicSource.loop = aTrack.loops;
+        currentMusicSource.Play();
+        
     }
 
     public void adjustMusicVolume()

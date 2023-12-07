@@ -13,6 +13,7 @@ public class ChefController : MonoBehaviour
     public PlayerController playerController;
     private Coroutine deadCoroutine = null;
     private Coroutine chaseCoroutine = null;
+    private bool crossFadedAlready = false;
 
     // Start is called before the first frame update
     void Start()
@@ -41,15 +42,25 @@ public class ChefController : MonoBehaviour
         
         if (Vector3.Distance(transform.position, target.transform.position) <= triggerDist)
         {
-            // run towards player
+            // run towards player and cross fade music
             animator.SetBool("isRuning", true);
-            AudioManager.SetCrossFade(true);
+            ManageCrossFade();
             if (chaseCoroutine != null) chaseCoroutine = StartCoroutine(ChasePlayer());
         }
         else
         {
             animator.SetBool("isRuning", false);
         }
+    }
+
+    private void ManageCrossFade()
+    {
+        if (!crossFadedAlready)
+        {
+            AudioManager.SetCrossFade(true); 
+            crossFadedAlready = true;
+        }
+
     }
 
     private void GotTarget()
@@ -70,12 +81,12 @@ public class ChefController : MonoBehaviour
         Vector3 startPos = transform.position;
         Vector3 targetPos = target.transform.position;
         float startTime = Time.time;
-        float duration = 2f;
+        float duration = 1.2f;
 
         while (Time.time - startTime < duration)
         {
             float t = (Time.time - startTime) / duration;
-            transform.Translate(Vector3.Lerp(startPos, targetPos,t));
+            transform.position = Vector3.Lerp(startPos, targetPos, t);
             yield return null;
         }
         
@@ -83,8 +94,7 @@ public class ChefController : MonoBehaviour
     }
     IEnumerator PlayDeadScene()
     {
-        GameManager.ShakeTheCamera(.03f, .03f);
-        AudioManager.SetCrossFade(false);
+        GameManager.ShakeTheCamera(.06f, .06f);
         playerController.SetIsAlive(false);
         yield return new WaitForSeconds(2.5f);
 
@@ -92,5 +102,11 @@ public class ChefController : MonoBehaviour
         deadCoroutine = null;
     }
 
+
+    // IGNORE 
     // transform.Translate(lookDir * runSpeed * Time.deltaTime);
+    //transform.Translate(Vector3.Lerp(startPos, targetPos,t));
+    //transform.position = Vector3.MoveTowards(startPos, targetPos, t* runSpeed * Time.deltaTime);
+
+
 }

@@ -5375,6 +5375,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1373817599}
     - target: {fileID: 5185573603111660054, guid: 84b8ee90aa2379d4cb27148ba6381456, type: 3}
+      propertyPath: droanMusic
+      value: 
+      objectReference: {fileID: 11400000, guid: 4ee604b645bbc064d9cfadb7a3db021a, type: 2}
+    - target: {fileID: 5185573603111660054, guid: 84b8ee90aa2379d4cb27148ba6381456, type: 3}
       propertyPath: musicSlider
       value: 
       objectReference: {fileID: 762888590}
@@ -7414,7 +7418,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 3936985339873027018, guid: 3effd86a88f0de0458ec4112f597a1df, type: 2}
-  m_audioClip: {fileID: 8300000, guid: ccfba0115ffde264c9f30a20d185fa16, type: 3}
+  m_audioClip: {fileID: 8300000, guid: d21b2a6eb202fca4e8458e24f822d5f1, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
