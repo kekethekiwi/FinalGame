@@ -84,6 +84,7 @@ public class ChefController : MonoBehaviour
     IEnumerator PlayDeadScene()
     {
         GameManager.ShakeTheCamera(.03f, .03f);
+        AudioManager.SetCrossFade(false);
         playerController.SetIsAlive(false);
         yield return new WaitForSeconds(2.5f);
 
