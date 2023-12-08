@@ -9,39 +9,43 @@ public class AudioManager : MonoBehaviour
     public AudioSource musicSource1;
     public AudioSource musicSource2;
     public MusicTrackScriptable mainMusic;
+    public MusicTrackScriptable droanMusic;
     [SerializeField] private AudioMixer mixer;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
-    
+    public static AudioManager audioManager;
 
     private AudioSource currentMusicSource;
     private AudioSource otherMusicSource;
-    private float crossFadeSpeed = 1f;
-    private bool doCrossFade = false;
+    private float crossFadeSpeed = 1.5f;
+    private static bool doCrossFade = false;
     
-    // Start is called before the first frame update
     void Start()
     {
+        if (audioManager != null) Destroy(this.gameObject);
+        audioManager = this;
+
         currentMusicSource = musicSource1;
         otherMusicSource = musicSource2;
+        otherMusicSource.volume = 0;
         PlayMusic(mainMusic);
 
         LoadVolume();
         
     }
-
-    // Update is called once per frame
     void Update()
     {
         if (doCrossFade)
         {
-            currentMusicSource.volume += Time.deltaTime * crossFadeSpeed;
-            otherMusicSource.volume -= Time.deltaTime * crossFadeSpeed;
-            if(currentMusicSource.volume >= 1)
+            currentMusicSource.volume -= Time.deltaTime * crossFadeSpeed;
+            otherMusicSource.volume += Time.deltaTime * crossFadeSpeed;
+            if (otherMusicSource.volume >= 1)
             {
-                otherMusicSource.volume = 0;
+                currentMusicSource.volume = 0;
                 FlipMusicSources();
+                PlayMusic(droanMusic);
                 doCrossFade = false;
+                //Debug.Log($"currentMusicSource = {currentMusicSource}");
             }
 
         }
@@ -56,12 +60,10 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(MusicTrackScriptable aTrack)
     {
-        if (currentMusicSource != null)
-        {
-            currentMusicSource.clip = aTrack.mainMusicClip;
-            currentMusicSource.loop = aTrack.loops;
-            currentMusicSource.Play();
-        }
+        currentMusicSource.clip = aTrack.mainMusicClip;
+        currentMusicSource.loop = aTrack.loops;
+        currentMusicSource.Play();
+        
     }
 
     public void adjustMusicVolume()
@@ -92,10 +94,17 @@ public class AudioManager : MonoBehaviour
 
     private void LoadVolume()
     {
+        
         musicSlider.value = SaveManager.GetMusicVol();
         sfxSlider.value = SaveManager.GetSFXVol();
         adjustMusicVolume();
         adjustSFXVolume();
+        
+        
     }
 
+    public static void SetCrossFade(bool crossFade)
+    {
+        doCrossFade = crossFade;
+    }
 }

@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour
         if (gameManager != null) Destroy(this.gameObject);
         gameManager = this;
 
-        menu.SetActive(false);
+        if (menu != null) menu.SetActive(false);
+
 
         SaveManager.LoadGame();
         saveSlot = SaveManager.GetSaveSlot();
@@ -43,7 +44,6 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         ManageMenu();
-        GameReset();
     }
 
     private void ManageMenu()
@@ -69,11 +69,14 @@ public class GameManager : MonoBehaviour
         if (gameManager != null && !pause) gameManager.shakeCamera.ShakeTheCamera(amt, duration);
     }
 
-    private void GameReset()
+    public void GameReset()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
+        PlayerController.SetIsAlive(true);
+        SceneManager.LoadScene(0);
+       
+    }
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
