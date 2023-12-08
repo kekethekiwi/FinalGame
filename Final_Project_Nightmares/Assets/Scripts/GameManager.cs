@@ -24,13 +24,11 @@ public class GameManager : MonoBehaviour
 
         if (menu != null) menu.SetActive(false);
 
-
         SaveManager.LoadGame();
         saveSlot = SaveManager.GetSaveSlot();
         sfxVol = SaveManager.GetMusicVol();
         musicVol = SaveManager.GetSFXVol();
         if (displaySaveSlot != null) displaySaveSlot.text = "" + saveSlot;
-
 
     }
 
@@ -40,7 +38,6 @@ public class GameManager : MonoBehaviour
         SaveManager.SetSaveSlot(1);
     }
 
-    // Update is called once per frame
     void Update()
     {
         ManageMenu();

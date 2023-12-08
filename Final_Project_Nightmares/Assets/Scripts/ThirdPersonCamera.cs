@@ -14,10 +14,6 @@ public class ThirdPersonCamera : MonoBehaviour
     private Vector3 targetPos;
     private Vector3 faceDir;
 
-    void Start()
-    {
-        
-    }
 
     void Update()
     {   
@@ -32,9 +28,10 @@ public class ThirdPersonCamera : MonoBehaviour
             camera.transform.rotation = Quaternion.LookRotation(faceDir, Vector3.up);
         }
 
-        // IGNORE TEST CODE
-        //Debug.Log($"targetPos = {targetPos}, camera's pos = {camera.transform.position}" + $"FaceDir = {faceDir}");
-        //transform.rotation = Vector3.SmoothDamp(transform.rotation, player.t)
-        //camera.transform.position = player.transform.position;
     }
+
+    // IGNORE TEST CODE
+    //Debug.Log($"targetPos = {targetPos}, camera's pos = {camera.transform.position}" + $"FaceDir = {faceDir}");
+    //transform.rotation = Vector3.SmoothDamp(transform.rotation, player.t)
+    //camera.transform.position = player.transform.position;
 }

@@ -13,12 +13,6 @@ public class ChefController : MonoBehaviour
     private Coroutine deadCoroutine = null;
     private bool crossFadedAlready = false;
 
-    //private Coroutine chaseCoroutine = null;
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -28,7 +22,6 @@ public class ChefController : MonoBehaviour
         //Chef got six
         GotTarget();
 
-        // shake camera
 
     }
 

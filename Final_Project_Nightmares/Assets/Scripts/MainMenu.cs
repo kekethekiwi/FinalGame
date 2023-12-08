@@ -12,18 +12,12 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject progressBar;
     [SerializeField] private TMP_Text percentText;
     [SerializeField] private Slider slider;
-    // Start is called before the first frame update
     void Start()
     {
         progressBar.SetActive(false);
         buttons.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void QuitGame()
     {
         Application.Quit();

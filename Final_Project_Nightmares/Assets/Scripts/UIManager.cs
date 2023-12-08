@@ -6,19 +6,6 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     public TMP_Text pauseText;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void PauseGame()
     {
         if (pauseText.text == "Pause")
@@ -32,13 +19,11 @@ public class UIManager : MonoBehaviour
         {
             GameManager.pause = false;
             Time.timeScale = 1;
-            //pauseText.color = new Color(222, 222, 222, 255); // hexadecimal #DEDEDE
             pauseText.text = "Pause";
         }
         
     }
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
+
+    // IGNORE THIS
+    //pauseText.color = new Color(222, 222, 222, 255); // hexadecimal #DEDEDE
 }

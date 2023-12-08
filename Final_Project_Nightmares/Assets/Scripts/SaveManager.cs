@@ -50,16 +50,6 @@ public class SaveManager : MonoBehaviour
 
     private static void SaveData(GameData aData, string aPath)
     {
-        //try
-        //{
-        //    string saveData = JsonUtility.ToJson(aData);
-        //    File.WriteAllText(saveData, aPath);
-        //}
-        //catch (System.Exception e)
-        //{
-        //    Debug.LogError(e);
-        //}
-
         try
         {
             using (StreamWriter writer = new StreamWriter(aPath))
@@ -91,18 +81,6 @@ public class SaveManager : MonoBehaviour
 
     private static GameData LoadData(string aPath)
     {
-        //try
-        //{
-        //    string saveData = File.ReadAllText(aPath);
-        //    return JsonUtility.FromJson<GameData>(saveData);
-            
-        //}
-        //catch (System.Exception e)
-        //{
-        //    Debug.LogError(e);
-        //}
-        //return null;
-
         try
         {
             if (System.IO.File.Exists(aPath))
@@ -125,6 +103,28 @@ public class SaveManager : MonoBehaviour
         }
         return null;
     }
+
+    //IGNORE
+    //try
+    //{
+    //    string saveData = JsonUtility.ToJson(aData);
+    //    File.WriteAllText(saveData, aPath);
+    //}
+    //catch (System.Exception e)
+    //{
+    //    Debug.LogError(e);
+    //}
+    //try
+    //{
+    //    string saveData = File.ReadAllText(aPath);
+    //    return JsonUtility.FromJson<GameData>(saveData);
+
+    //}
+    //catch (System.Exception e)
+    //{
+    //    Debug.LogError(e);
+    //}
+    //return null;
 }
 
 [System.Serializable]
