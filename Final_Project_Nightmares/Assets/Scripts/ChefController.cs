@@ -10,12 +10,10 @@ public class ChefController : MonoBehaviour
     public Animator animator;
     public float triggerDist;
     public float deadDist;
-    public PlayerController playerController;
     private Coroutine deadCoroutine = null;
-    private Coroutine chaseCoroutine = null;
     private bool crossFadedAlready = false;
 
-    // Start is called before the first frame update
+    //private Coroutine chaseCoroutine = null;
     void Start()
     {
         
@@ -45,7 +43,7 @@ public class ChefController : MonoBehaviour
             // run towards player and cross fade music
             animator.SetBool("isRuning", true);
             ManageCrossFade();
-            if (chaseCoroutine != null) chaseCoroutine = StartCoroutine(ChasePlayer());
+            ChasePlayer();
         }
         else
         {
@@ -75,27 +73,18 @@ public class ChefController : MonoBehaviour
         }
 
     }
-    IEnumerator ChasePlayer()
-    {
-        Vector3 lookDir = target.transform.position - transform.position;
-        Vector3 startPos = transform.position;
-        Vector3 targetPos = target.transform.position;
-        float startTime = Time.time;
-        float duration = 1.2f;
 
-        while (Time.time - startTime < duration)
-        {
-            float t = (Time.time - startTime) / duration;
-            transform.position = Vector3.Lerp(startPos, targetPos, t);
-            yield return null;
-        }
-        
-        chaseCoroutine = null;
+    private void ChasePlayer()
+    {
+        Vector3 lookDir = (target.transform.position - transform.position);
+        lookDir.Normalize();
+        transform.Translate(lookDir * runSpeed * Time.deltaTime);
     }
+    
     IEnumerator PlayDeadScene()
     {
         GameManager.ShakeTheCamera(.06f, .06f);
-        playerController.SetIsAlive(false);
+        PlayerController.SetIsAlive(false);
         yield return new WaitForSeconds(2.5f);
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -107,6 +96,25 @@ public class ChefController : MonoBehaviour
     // transform.Translate(lookDir * runSpeed * Time.deltaTime);
     //transform.Translate(Vector3.Lerp(startPos, targetPos,t));
     //transform.position = Vector3.MoveTowards(startPos, targetPos, t* runSpeed * Time.deltaTime);
+    //IEnumerator ChasePlayerCoroutine()
+    //{
+    //    Vector3 lookDir = target.transform.position - transform.position;
+    //    Vector3 startPos = transform.position;
+    //    Vector3 targetPos = target.transform.position;
+    //    float startTime = Time.time;
+    //    float duration = .8f;
 
+    //    while (Time.time - startTime < duration)
+    //    {
+    //        float t = (Time.time - startTime) / duration;
+    //        transform.Translate(Vector3.Lerp(startPos, targetPos, t));
+    //        yield return null;
+    //    }
+
+    //    transform.position = targetPos;
+
+    //    chaseCoroutine = null;
+    //}
+    //if (chaseCoroutine == null) chaseCoroutine = StartCoroutine(ChasePlayerCoroutine());
 
 }

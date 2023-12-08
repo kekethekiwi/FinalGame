@@ -71,7 +71,12 @@ public class GameManager : MonoBehaviour
 
     public void GameReset()
     {
+        PlayerController.SetIsAlive(true);
         SceneManager.LoadScene(0);
        
+    }
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

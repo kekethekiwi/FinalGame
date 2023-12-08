@@ -408,7 +408,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    public void SetIsAlive(bool alive)
+    public static void SetIsAlive(bool alive)
     {
         isAlive = alive;
     }

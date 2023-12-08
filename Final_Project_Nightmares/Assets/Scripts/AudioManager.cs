@@ -20,7 +20,6 @@ public class AudioManager : MonoBehaviour
     private float crossFadeSpeed = 1.5f;
     private static bool doCrossFade = false;
     
-    // Start is called before the first frame update
     void Start()
     {
         if (audioManager != null) Destroy(this.gameObject);
@@ -34,8 +33,6 @@ public class AudioManager : MonoBehaviour
         LoadVolume();
         
     }
-
-    // Update is called once per frame
     void Update()
     {
         if (doCrossFade)
@@ -47,8 +44,8 @@ public class AudioManager : MonoBehaviour
                 currentMusicSource.volume = 0;
                 FlipMusicSources();
                 PlayMusic(droanMusic);
-                Debug.Log($"currentMusicSource = {currentMusicSource}");
                 doCrossFade = false;
+                //Debug.Log($"currentMusicSource = {currentMusicSource}");
             }
 
         }
@@ -63,8 +60,6 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(MusicTrackScriptable aTrack)
     {
-        //if (currentMusicSource != null)
-        Debug.Log("play droan music");
         currentMusicSource.clip = aTrack.mainMusicClip;
         currentMusicSource.loop = aTrack.loops;
         currentMusicSource.Play();
